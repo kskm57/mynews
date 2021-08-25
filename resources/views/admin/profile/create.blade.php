@@ -47,7 +47,7 @@ old('hobby') }}">
                     <label class="col-md-2">自己紹介</label>
                     <div class="col-md-10">
                         <textarea class="form-control" name="introduction" rows="20">
-                            {{ old('introduction') }}
+{{ old('introduction') }}
                         </textarea>
 
                     </div>
