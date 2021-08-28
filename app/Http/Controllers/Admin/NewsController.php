@@ -8,6 +8,11 @@ use App\Http\Controllers\Controller;
 //以下を追記することでNews Modelを使えるようになる
 use App\News;
 
+use App\History;
+
+use Carbon\Carbon;
+
+
 class NewsController extends Controller
 {
     //
@@ -23,7 +28,7 @@ class NewsController extends Controller
         //validationを行う
         $this->validate($request, News::$rules);
         
-        $news = new News;
+        $news = new News;   //？？？
         $form = $request->all();
         
         //フォームから画像が送信されて来たら、保存して、$news->image_path に画像のパスを保存する
@@ -40,7 +45,7 @@ class NewsController extends Controller
         unset($form['image']);
         
         //データベースに保存する
-        $news->fill($form);
+        $news->fill($form);  //->演算子の意味？？
         $news->save();
         
         
@@ -70,6 +75,7 @@ class NewsController extends Controller
         if(empty($news)){
             abort(404);
         }
+        \Debugbar::info($news);
         return view('admin.news.edit', ['news_form' => $news]);
     }
     
@@ -99,7 +105,14 @@ class NewsController extends Controller
         //該当するデータを上書きして保存する
         $news->fill($news_form)->save();
         
-        return redirect('admin\news');
+        
+        //編集履歴を保存
+        $history = new History;
+        $history->news_id = $news->id;
+        $history->edited_at = Carbon::now(); //Carbonという日付操作ライブラリ使って取得した現在時刻を、History Modelの edited_at として記録
+        $history->save();
+        
+        return redirect('admin/news/');
     }
     
     
@@ -110,7 +123,7 @@ class NewsController extends Controller
         $news = News::find($request->id);
         //削除する
         $news->delete();
-        return redirect('admin/news/');
+        return redirect('admin/news');
     }
 }
 
