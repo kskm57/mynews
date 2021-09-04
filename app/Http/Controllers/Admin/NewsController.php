@@ -49,7 +49,7 @@ class NewsController extends Controller
         $news->save();
         
         
-        return redirect('admin/news/create');
+        return redirect('admin/news');
     }
     
     
